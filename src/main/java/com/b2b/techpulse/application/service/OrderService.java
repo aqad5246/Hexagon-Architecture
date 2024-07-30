@@ -4,19 +4,24 @@ import org.springframework.stereotype.Service;
 
 import com.b2b.techpulse.domain.model.Order;
 import com.b2b.techpulse.application.port.api.OrderUseCase;
+import com.b2b.techpulse.application.port.persistence.OrderLogger;
 import com.b2b.techpulse.application.port.persistence.OrderRepository;
 
 @Service
 public class OrderService implements OrderUseCase {
     private final OrderRepository orderRepository;
+    private final OrderLogger orderLogger;
     
-    public OrderService(OrderRepository orderRepository) {
+    public OrderService(OrderRepository orderRepository, OrderLogger orderLogger) {
         this.orderRepository = orderRepository;
+        this.orderLogger = orderLogger;
     }
 
     @Override
     public Order createOrder(Order order) {
-        return orderRepository.save(order);
+        orderRepository.save(order);
+        orderLogger.logOrder(order);
+        return order;
     }
 
     // @Override
